@@ -43,3 +43,8 @@ Since this extension is not yet published on the Chrome Web Store, you can insta
 1. Visit any page and look for underlined time strings (e.g., `14:30 PST` or `9 PM EST`).
 2. Highlight one of those times to show the conversion bubble in your target timezone.
 3. Click the extension icon to change timezone or toggle automatic underlining on/off.#
+
+
+https://github.com/user-attachments/assets/b8d3ae9d-74e1-435f-9532-c8f6cc72748d
+
+
