@@ -2,6 +2,7 @@ let bubble = null;
 let debounceTimer = null;
 let targetTimezone = 'auto';
 let autoUnderlineEnabled = true;
+let use24HourClock = false;
 let inlineRefreshTimer = null;
 let mutationObserver = null;
 
@@ -14,9 +15,10 @@ function createBubble() {
 
 // Load user preferences
 function loadPreference() {
-  chrome.storage.sync.get(['targetTimezone', 'autoUnderlineEnabled'], (result) => {
+  chrome.storage.sync.get(['targetTimezone', 'autoUnderlineEnabled', 'use24HourClock'], (result) => {
     targetTimezone = result.targetTimezone || 'auto';
     autoUnderlineEnabled = result.autoUnderlineEnabled !== false;
+    use24HourClock = result.use24HourClock === true;
     refreshInlineHighlightsDebounced();
   });
 }
@@ -31,6 +33,10 @@ chrome.storage.onChanged.addListener((changes, namespace) => {
 
   if (changes.autoUnderlineEnabled) {
     autoUnderlineEnabled = changes.autoUnderlineEnabled.newValue !== false;
+  }
+
+  if (changes.use24HourClock) {
+    use24HourClock = changes.use24HourClock.newValue === true;
   }
 
   refreshInlineHighlightsDebounced();
@@ -108,7 +114,8 @@ function parseAndConvertTime(text) {
     const convertedDate = parsedDate.setZone(destZone);
     
     // Format output
-    const formattedTime = convertedDate.toFormat('h:mm a');
+    const outputFormat = use24HourClock ? 'HH:mm' : 'h:mm a';
+    const formattedTime = convertedDate.toFormat(outputFormat);
     const destZoneName = destZone.split('/').pop().replace(/_/g, ' ');
     
     return `${formattedTime} (${destZoneName})`;
