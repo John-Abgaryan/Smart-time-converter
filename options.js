@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
   const tzSelect = document.getElementById('timezone');
   const autoUnderlineToggle = document.getElementById('auto-underline');
+  const use24HourToggle = document.getElementById('use-24-hour');
   const darkModeToggle = document.getElementById('dark-mode');
   const saveBtn = document.getElementById('save');
   const statusDiv = document.getElementById('status');
@@ -79,7 +80,7 @@ document.addEventListener('DOMContentLoaded', () => {
   buildTimezoneOptions();
 
   // Load saved preferences
-  chrome.storage.sync.get(['targetTimezone', 'autoUnderlineEnabled', 'darkModeEnabled'], (result) => {
+  chrome.storage.sync.get(['targetTimezone', 'autoUnderlineEnabled', 'darkModeEnabled', 'use24HourClock'], (result) => {
     if (result.targetTimezone) {
       tzSelect.value = result.targetTimezone;
     } else {
@@ -87,6 +88,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     autoUnderlineToggle.checked = result.autoUnderlineEnabled !== false;
+    use24HourToggle.checked = result.use24HourClock === true;
 
     const darkModeEnabled = result.darkModeEnabled === true;
     darkModeToggle.checked = darkModeEnabled;
@@ -100,9 +102,10 @@ document.addEventListener('DOMContentLoaded', () => {
   saveBtn.addEventListener('click', () => {
     const selectedTz = tzSelect.value;
     const autoUnderlineEnabled = autoUnderlineToggle.checked;
+    const use24HourClock = use24HourToggle.checked;
     const darkModeEnabled = darkModeToggle.checked;
 
-    chrome.storage.sync.set({ targetTimezone: selectedTz, autoUnderlineEnabled, darkModeEnabled }, () => {
+    chrome.storage.sync.set({ targetTimezone: selectedTz, autoUnderlineEnabled, use24HourClock, darkModeEnabled }, () => {
       statusDiv.style.display = 'block';
       setTimeout(() => {
         statusDiv.style.display = 'none';
